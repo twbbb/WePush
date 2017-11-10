@@ -1,5 +1,11 @@
 package com.fangxuele.tool.wechat.push.logic;
 
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
+import com.aliyuncs.sms.model.v20160927.SingleSendSmsRequest;
+import com.aliyuncs.sms.model.v20160927.SingleSendSmsResponse;
 import com.fangxuele.tool.wechat.push.ui.Init;
 import com.fangxuele.tool.wechat.push.ui.MainWindow;
 import com.opencsv.CSVWriter;
@@ -90,6 +96,22 @@ public class PushManage {
                     }
                 }
                 break;
+            case "阿里云短信":
+
+                IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", Init.configer.getAliYunKey(), Init.configer.getAliYunSecret());
+                DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", "Sms", "sms.aliyuncs.com");
+                IAcsClient iacsClient = new DefaultAcsClient(profile);
+                SingleSendSmsRequest singleSendSmsRequest = makeAliYunMessage();
+
+                toUsers = MainWindow.mainWindow.getPreviewUserField().getText().split(";");
+                for (String toUser : toUsers) {
+                    singleSendSmsRequest.setRecNum(toUser);
+                    SingleSendSmsResponse httpResponse = iacsClient.getAcsResponse(singleSendSmsRequest);
+                    if (httpResponse == null ) {
+                        throw new Exception(httpResponse.getRequestId().toString());
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -174,6 +196,39 @@ public class PushManage {
         request.setSmsFreeSignName(Init.configer.getAliSign());
         // 短信模板ID，传入的模板必须是在阿里大鱼“管理中心-短信模板管理”中的可用模板。示例：SMS_585014
         request.setSmsTemplateCode(MainWindow.mainWindow.getMsgTemplateIdTextField().getText());
+
+        return request;
+    }
+
+
+    /**
+     * 组织阿里大于模板短信消息
+     *
+     * @return
+     */
+    synchronized public static SingleSendSmsRequest makeAliYunMessage() {
+
+        SingleSendSmsRequest request = new SingleSendSmsRequest();
+        // 模板参数
+        Map<String, String> paramMap = new HashMap<>();
+
+        if (MainWindow.mainWindow.getTemplateMsgDataTable().getModel().getRowCount() == 0) {
+            Init.initTemplateDataTable();
+        }
+
+        DefaultTableModel tableModel = (DefaultTableModel) MainWindow.mainWindow.getTemplateMsgDataTable().getModel();
+        int rowCount = tableModel.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            paramMap.put((String) tableModel.getValueAt(i, 0), ((String) tableModel.getValueAt(i, 1)).replaceAll("#ENTER#", "\n"));
+        }
+
+        request.setParamString(JSONUtil.parseFromMap(paramMap).toJSONString(0));
+
+        // 短信签名，传入的短信签名必须是在阿里大鱼“管理中心-短信签名管理”中的可用签名。如“阿里大鱼”已在短信签名管理中通过审核，
+        // 则可传入”阿里大鱼“（传参时去掉引号）作为短信签名。短信效果示例：【阿里大鱼】欢迎使用阿里大鱼服务。
+        request.setSignName(Init.configer.getAliYunSign());
+        // 短信模板ID，传入的模板必须是在阿里大鱼“管理中心-短信模板管理”中的可用模板。示例：SMS_585014
+        request.setTemplateCode(MainWindow.mainWindow.getMsgTemplateIdTextField().getText());
 
         return request;
     }

@@ -59,6 +59,24 @@ public class SettingListener {
             }
         });
 
+        // 设置-阿里云-保存
+        MainWindow.mainWindow.getSettingAliyunSms().addActionListener(e -> {
+            try {
+
+                Init.configer.setAliYunKey(new String(MainWindow.mainWindow.getAliyunSmsAppKey().getPassword()));
+                Init.configer.setAliYunSecret(new String(MainWindow.mainWindow.getAliyunSmsAppSecret().getPassword()));
+                Init.configer.setAliYunSign(MainWindow.mainWindow.getAliyunSmsSign().getText());
+                Init.configer.save();
+
+                JOptionPane.showMessageDialog(MainWindow.mainWindow.getSettingPanel(), "保存成功！", "成功",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e1) {
+                JOptionPane.showMessageDialog(MainWindow.mainWindow.getSettingPanel(), "保存失败！\n\n" + e1.getMessage(), "失败",
+                        JOptionPane.ERROR_MESSAGE);
+                logger.error(e1);
+            }
+        });
+
         // mysql数据库-测试链接
         MainWindow.mainWindow.getSettingTestDbLinkButton().addActionListener(e -> {
             try {

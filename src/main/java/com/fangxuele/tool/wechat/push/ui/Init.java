@@ -82,8 +82,7 @@ public class Init {
         MainWindow.mainWindow.getSettingScrollPane().getVerticalScrollBar().setUnitIncrement(15);
         MainWindow.mainWindow.getSettingScrollPane().getVerticalScrollBar().setDoubleBuffered(true);
 
-        // 设置版本
-        MainWindow.mainWindow.getVersionLabel().setText(ConstantsUI.APP_VERSION);
+
     }
 
     /**
@@ -230,6 +229,15 @@ public class Init {
                 MainWindow.mainWindow.getTemplateDataColorTextField().setVisible(false);
                 MainWindow.mainWindow.getPreviewMemberLabel().setText("预览消息用户手机号（以半角分号分隔）");
                 break;
+            case "阿里云短信":
+                MainWindow.mainWindow.getKefuMsgPanel().setVisible(false);
+                MainWindow.mainWindow.getTemplateMsgPanel().setVisible(true);
+                MainWindow.mainWindow.getTemplateUrlLabel().setVisible(false);
+                MainWindow.mainWindow.getMsgTemplateUrlTextField().setVisible(false);
+                MainWindow.mainWindow.getTemplateMsgColorLabel().setVisible(false);
+                MainWindow.mainWindow.getTemplateDataColorTextField().setVisible(false);
+                MainWindow.mainWindow.getPreviewMemberLabel().setText("预览消息用户手机号（以半角分号分隔）");
+                break;
             default:
                 break;
         }
@@ -321,6 +329,11 @@ public class Init {
      * 初始化设置tab
      */
     public static void initSettingTab() {
+        //阿里云短信
+        MainWindow.mainWindow.setAliyunSmsAppKey(configer.getAliYunKey());
+        MainWindow.mainWindow.setAliyunSmsAppSecret(configer.getAliYunSecret());
+        MainWindow.mainWindow.setAliyunSmsSign(configer.getAliYunSign());
+
         // 微信
         MainWindow.mainWindow.setWechatAppIdTextField(configer.getWechatAppId());
         MainWindow.mainWindow.setWechatAppSecretPasswordField(configer.getWechatAppSecret());

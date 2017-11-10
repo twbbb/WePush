@@ -183,6 +183,9 @@ public class Config {
         props.setProperty("setting.appearance.theme", "Darcula(推荐)");
         props.setProperty("setting.appearance.font", "Microsoft YaHei UI");
         props.setProperty("setting.appearance.fontSize", "18");
+        props.setProperty("setting.aliyun.appKey", "");
+        props.setProperty("setting.aliyun.appSecret", "");
+        props.setProperty("setting.aliyun.appSecret", "");
 
         save();
     }
@@ -434,6 +437,32 @@ public class Config {
     public void setAliAppSecret(String aliAppSecret) {
         props.setProperty("setting.ali.appSecret", aliAppSecret);
     }
+
+
+    public String getAliYunKey() {
+        return props.getProperty("setting.aliyun.appKey");
+    }
+
+    public void setAliYunKey(String aliAppKey) {
+        props.setProperty("setting.aliyun.appKey", aliAppKey);
+    }
+
+    public String getAliYunSecret() {
+        return props.getProperty("setting.aliyun.appSecret");
+    }
+
+    public void setAliYunSecret(String aliAppSecret) {
+        props.setProperty("setting.aliyun.appSecret", aliAppSecret);
+    }
+
+    public String getAliYunSign() {
+        return props.getProperty("setting.aliyun.sign");
+    }
+
+    public void setAliYunSign(String aliSign) {
+        props.setProperty("setting.aliyun.sign", aliSign);
+    }
+
 
     public String getAliSign() {
         return props.getProperty("setting.ali.sign");
